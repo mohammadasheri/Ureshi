@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
-    void createUserWithRole(UserRequestDTO haraUser);
+    UreshiiUser createUserWithRole(CreateUserRequestDTO user);
 
-    void createUser(String name, String password, Role role);
+    UreshiiUser createUser(String name, String password, Role role);
 
-    boolean disableEnableUser(UserRequestDTO haraUser, boolean enabled);
+    boolean disableEnableUser(CreateUserRequestDTO user, boolean enabled);
 
     List<UreshiiUser> findAll();
 

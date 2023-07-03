@@ -1,6 +1,7 @@
 package com.ureshii.demo.user;
 
 import com.ureshii.demo.role.Role;
+import com.ureshii.demo.role.RoleEnum;
 import com.ureshii.demo.role.RoleService;
 import jakarta.transaction.Transactional;
 import org.hibernate.service.spi.ServiceException;
@@ -28,20 +29,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUserWithRole(UserRequestDTO dto) {
-        Role role = roleService.findOrCreateRole(dto.role());
-        createUser(dto.username(), dto.password(), role);
+    public UreshiiUser createUserWithRole(CreateUserRequestDTO dto) {
+        Role role = roleService.findOrCreateRole(RoleEnum.User.name());
+        Optional<UreshiiUser> user = userRepository.findByUsername(dto.username());
+        return user.orElseGet(() -> createUser(dto.username(), dto.password(), role));
     }
 
     @Override
-    public boolean disableEnableUser(UserRequestDTO dto, boolean enabled) {
-        roleService.validateRole(dto.role());
-        Role role = roleService.findByName(dto.role());
-        if (role == null)
-            throw new ServiceException("ROLE_NOT_FOUND!");
-        Optional<UreshiiUser> haraUser = findByUsernameAndPassword(dto.username(), dto.password());
-        if (haraUser.isPresent()) {
-            UreshiiUser user = haraUser.get();
+    public boolean disableEnableUser(CreateUserRequestDTO dto, boolean enabled) {
+        Optional<UreshiiUser> userOptional = findByUsernameAndPassword(dto.username(), dto.password());
+        if (userOptional.isPresent()) {
+            UreshiiUser user = userOptional.get();
             user.setEnabled(enabled);
             userRepository.save(user);
             return true;
@@ -50,13 +48,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(String name, String password, Role role) {
-        UreshiiUser haraUser = new UreshiiUser();
-        haraUser.setUsername(name);
-        haraUser.setPassword(encoder.encode(password));
-        haraUser.setEnabled(true);
-        haraUser.setRoles(Collections.singleton(role));
-        userRepository.save(haraUser);
+    public UreshiiUser createUser(String name, String password, Role role) {
+        UreshiiUser user = new UreshiiUser();
+        user.setUsername(name);
+        user.setPassword(encoder.encode(password));
+        user.setEnabled(true);
+        user.setRoles(Collections.singleton(role));
+        return userRepository.save(user);
     }
 
     @Override

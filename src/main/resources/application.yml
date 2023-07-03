@@ -20,3 +20,7 @@ spring:
 
 app:
   baseDirectory: /opt/ureshii
+  jwt:
+    jwtSecret: haraJWTSecretKey
+    jwtExpirationMs: 60000000
+    jwtRefreshExpirationMs: 1800000000

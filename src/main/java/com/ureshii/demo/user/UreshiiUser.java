@@ -23,6 +23,10 @@ public class UreshiiUser extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
+    private String firstName;
+
+    private String lastName;
+
     @Column(nullable = false)
     @JsonIgnore
     private String password;
