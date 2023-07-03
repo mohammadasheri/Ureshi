@@ -1,0 +1,22 @@
+spring:
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: hara123HARA123
+    hikari:
+      maximum-pool-size: 16
+      connectionTimeout: 300000
+      validation-timeout: 300000
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  servlet:
+    multipart:
+      max-file-size: 8MB
+      max-request-size: 8MB
+
+app:
+  baseDirectory: /opt/ureshii
