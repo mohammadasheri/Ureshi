@@ -1,6 +1,5 @@
 package com.ureshii.demo.config.file;
 
-import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.file.FileHeaders;
 import org.springframework.messaging.handler.annotation.Header;
