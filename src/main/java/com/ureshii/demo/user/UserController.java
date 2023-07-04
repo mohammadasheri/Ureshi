@@ -1,6 +1,10 @@
 package com.ureshii.demo.user;
 
 import com.ureshii.demo.authentication.JwtUtils;
+import com.ureshii.demo.user.dto.CreateUserRequestDTO;
+import com.ureshii.demo.user.dto.LoginRequestDTO;
+import com.ureshii.demo.user.dto.LoginResponseDTO;
+import com.ureshii.demo.user.dto.UserResponseDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,7 @@ public record UserController(UserService userService, AuthenticationManager auth
 
     @PostMapping("/create")
     ResponseEntity<UserResponseDTO> createUser(@RequestBody @NotNull CreateUserRequestDTO dto) {
+        log.info("UserController-> create user");
         UreshiiUser user = userService.createUserWithRole(dto);
         return new ResponseEntity<>(convertUser(user), HttpStatus.CREATED);
     }

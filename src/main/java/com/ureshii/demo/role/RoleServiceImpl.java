@@ -1,5 +1,6 @@
 package com.ureshii.demo.role;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -7,6 +8,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.List;
 
 @Service
+@Slf4j
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
@@ -17,6 +19,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role findOrCreateRole(String roleName) {
+        log.debug("Role Service-> find or create role");
         validateRole(roleName);
         Role role = findByName(roleName);
         if (role == null) {
@@ -25,6 +28,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     private Role createNewRole(String role) {
+        log.info("Role Service-> create new role");
         Role newRole = new Role();
         newRole.setName(role);
         saveOrUpdate(newRole);
@@ -33,6 +37,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void validateRole(String role) {
+        log.debug("Role Service-> validate role");
         if (ObjectUtils.isEmpty(role)) throw new ServiceException("Role is null!");
         if (role.equalsIgnoreCase("Admin"))
             throw new ServiceException("You can not edit or define an admin role!");

@@ -1,4 +1,4 @@
-package com.ureshii.demo.user;
+package com.ureshii.demo.user.dto;
 
 
 import jakarta.validation.constraints.NotBlank;

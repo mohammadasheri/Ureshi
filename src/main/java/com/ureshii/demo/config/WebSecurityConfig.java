@@ -64,7 +64,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/create").permitAll()
                         .requestMatchers("/user/login").permitAll()
-                        .requestMatchers("/user/login/admin").permitAll()
+                        .requestMatchers("/song/create").permitAll()
                         .requestMatchers("/user/list").hasAnyAuthority(RoleEnum.Admin.name())
                         .requestMatchers("/user/role").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
                         .requestMatchers("/user/enableDisable").hasAnyAuthority(RoleEnum.Admin.name())

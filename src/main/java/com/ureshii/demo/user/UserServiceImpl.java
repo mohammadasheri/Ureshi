@@ -3,7 +3,9 @@ package com.ureshii.demo.user;
 import com.ureshii.demo.role.Role;
 import com.ureshii.demo.role.RoleEnum;
 import com.ureshii.demo.role.RoleService;
+import com.ureshii.demo.user.dto.CreateUserRequestDTO;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -30,6 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UreshiiUser createUserWithRole(CreateUserRequestDTO dto) {
+        log.info("User Service-> create user with role");
         Role role = roleService.findOrCreateRole(RoleEnum.User.name());
         Optional<UreshiiUser> user = userRepository.findByUsername(dto.username());
         return user.orElseGet(() -> createUser(dto.username(), dto.password(), role));
@@ -49,6 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UreshiiUser createUser(String name, String password, Role role) {
+        log.info("User Service-> create user");
         UreshiiUser user = new UreshiiUser();
         user.setUsername(name);
         user.setPassword(encoder.encode(password));

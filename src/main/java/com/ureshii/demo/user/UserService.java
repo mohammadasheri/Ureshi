@@ -2,6 +2,7 @@ package com.ureshii.demo.user;
 
 
 import com.ureshii.demo.role.Role;
+import com.ureshii.demo.user.dto.CreateUserRequestDTO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package com.ureshii.demo.user;
+package com.ureshii.demo.user.dto;
 
 
 import jakarta.validation.constraints.NotBlank;
 
-public record EnableUserRequestDTO(
+public record LoginRequestDTO(
         @NotBlank
         String username,
         @NotBlank

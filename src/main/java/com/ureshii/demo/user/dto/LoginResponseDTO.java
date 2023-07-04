@@ -1,4 +1,4 @@
-package com.ureshii.demo.user;
+package com.ureshii.demo.user.dto;
 
 public record LoginResponseDTO(
         String username,
