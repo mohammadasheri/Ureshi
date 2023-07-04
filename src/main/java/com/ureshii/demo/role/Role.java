@@ -1,9 +1,8 @@
 package com.ureshii.demo.role;
 
 import com.ureshii.demo.base.BaseEntity;
+import jakarta.persistence.*;
 import lombok.*;
-
-import javax.persistence.*;
 
 @Entity
 @Builder
