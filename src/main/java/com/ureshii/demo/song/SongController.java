@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/song")
@@ -31,6 +32,11 @@ public record SongController(SongService songService) {
                 songFile.getBytes());
         Song song = songService.createSong(dto);
         return new ResponseEntity<>(convertSong(song), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/list")
+    ResponseEntity<List<SongResponseDTO>> downloadSong() {
+        return new ResponseEntity<>(songService.getAllSongs().stream().map(this::convertSong).toList(), HttpStatus.OK);
     }
 
     @GetMapping("/download/{id}")

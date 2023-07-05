@@ -65,6 +65,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/user/create").permitAll()
                         .requestMatchers("/user/login").permitAll()
                         .requestMatchers("/song/create").permitAll()
+                        .requestMatchers("/song/list").permitAll()
                         .requestMatchers("/song/download/{id}").permitAll()
                         .requestMatchers("/artist/create").permitAll()
                         .requestMatchers("/artist/{id}").permitAll()

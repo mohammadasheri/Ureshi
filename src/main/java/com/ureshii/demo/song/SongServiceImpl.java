@@ -46,6 +46,11 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
+    public List<Song> getAllSongs() {
+        return repository.findAll();
+    }
+
+    @Override
     public Base64FileDTO downloadFileById(Long id) throws IOException, NotFoundException {
         Song song = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("There is no file available with this parameters."));
