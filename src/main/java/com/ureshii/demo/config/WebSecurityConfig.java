@@ -65,10 +65,9 @@ public class WebSecurityConfig {
                         .requestMatchers("/user/create").permitAll()
                         .requestMatchers("/user/login").permitAll()
                         .requestMatchers("/song/create").permitAll()
+                        .requestMatchers("/song/download/{id}").permitAll()
                         .requestMatchers("/artist/create").permitAll()
                         .requestMatchers("/artist/{id}").permitAll()
-                        .requestMatchers("/user/role").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
-                        .requestMatchers("/user/enableDisable").hasAnyAuthority(RoleEnum.Admin.name())
                         .requestMatchers("/user/update").hasAnyAuthority(RoleEnum.Admin.name())
                         .anyRequest().authenticated()
                 );
