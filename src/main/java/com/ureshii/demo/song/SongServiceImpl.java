@@ -35,12 +35,12 @@ public class SongServiceImpl implements SongService {
     @Override
     public Song createSong(CreateSongDTO dto) throws NotFoundException {
         log.info("Song service: create song");
-        String songFileAddress = generateNewFileAddress(dto.songFileType());
+        String songFileAddress = generateNewFileAddress(dto.mediaType());
         String pictureFileAddress = generateNewFileAddress(dto.pictureFileType());
         gateway.saveFile(songFileAddress, dto.songBytes());
         gateway.saveFile(pictureFileAddress, dto.pictureBytes());
         Artist artist = artistService.getArtistById(dto.artistId());
-        Song song = Song.builder().name(dto.name()).language(dto.language()).bitrate(dto.bitrate())
+        Song song = Song.builder().name(dto.name()).mediaType(dto.mediaType()).language(dto.language()).bitrate(dto.bitrate())
                 .fileAddress(songFileAddress).pictureAddress(pictureFileAddress).artists(Set.of(artist)).build();
         return repository.save(song);
     }
@@ -51,13 +51,11 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Base64FileDTO downloadFileById(Long id) throws IOException, NotFoundException {
+    public Song downloadFileById(Long id) throws IOException, NotFoundException {
         Song song = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("There is no file available with this parameters."));
-        String fileAddress = baseDirectory + song.getFileAddress();
-        File data = ResourceUtils.getFile(fileAddress);
-        byte[] bytes = FileUtils.readFileToByteArray(data);
-        return new Base64FileDTO(id, Base64.getEncoder().encodeToString(bytes), song.getName());
+
+        return song;
     }
 
     private String generateNewFileAddress(String fileType) {

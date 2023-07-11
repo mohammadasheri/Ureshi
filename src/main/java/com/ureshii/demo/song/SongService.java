@@ -10,5 +10,5 @@ public interface SongService {
 
     List<Song> getAllSongs();
 
-    Base64FileDTO downloadFileById(Long id) throws IOException, NotFoundException;
+    Song downloadFileById(Long id) throws IOException, NotFoundException;
 }

@@ -21,6 +21,7 @@ public class Song extends BaseEntity {
     private long id;
     @Column(nullable = false)
     private String name;
+    private String mediaType;
     private String language;
     private String bitrate;
     @Column(nullable = false, unique = true)

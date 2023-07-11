@@ -5,19 +5,26 @@ import com.ureshii.demo.exception.NotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/song")
 @Slf4j
-public record SongController(SongService songService) {
+public record SongController(SongService songService, @Value("${app.baseDirectory}") String baseDirectory) {
 
     @PostMapping("/create")
     ResponseEntity<SongResponseDTO> createSong(@RequestParam @NotBlank String name, @RequestParam String language,
@@ -40,8 +47,17 @@ public record SongController(SongService songService) {
     }
 
     @GetMapping("/download/{id}")
-    ResponseEntity<Base64FileDTO> downloadSong(@PathVariable @NotNull Long id) throws IOException, NotFoundException {
-        return new ResponseEntity<>(songService.downloadFileById(id), HttpStatus.OK);
+    ResponseEntity<ByteArrayResource> downloadSong(@PathVariable @NotNull Long id)
+            throws IOException, NotFoundException {
+        Song song = songService.downloadFileById(id);
+        String fileAddress = baseDirectory + song.getFileAddress();
+        File data = ResourceUtils.getFile(fileAddress);
+        byte[] dataBytes = FileUtils.readFileToByteArray(data);
+        ByteArrayResource resource = new ByteArrayResource(dataBytes);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-disposition", "attachment; filename=\"" + id + "." + song.getMediaType() + "\"");
+        return ResponseEntity.ok().headers(headers).contentLength(dataBytes.length)
+                .contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
     }
 
     private SongResponseDTO convertSong(Song song) {
