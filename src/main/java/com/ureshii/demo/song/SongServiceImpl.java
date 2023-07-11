@@ -5,15 +5,15 @@ import com.ureshii.demo.artist.ArtistService;
 import com.ureshii.demo.config.file.ImageWriterGateway;
 import com.ureshii.demo.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -35,12 +35,13 @@ public class SongServiceImpl implements SongService {
     @Override
     public Song createSong(CreateSongDTO dto) throws NotFoundException {
         log.info("Song service: create song");
-        String songFileAddress = generateNewFileAddress(dto.mediaType());
+        String songFileAddress = generateNewFileAddress(dto.songMediaType());
         String pictureFileAddress = generateNewFileAddress(dto.pictureFileType());
         gateway.saveFile(songFileAddress, dto.songBytes());
         gateway.saveFile(pictureFileAddress, dto.pictureBytes());
         Artist artist = artistService.getArtistById(dto.artistId());
-        Song song = Song.builder().name(dto.name()).mediaType(dto.mediaType()).language(dto.language()).bitrate(dto.bitrate())
+        Song song = Song.builder().name(dto.name()).duration(dto.duration()).songMediaType(dto.songMediaType())
+                .pictureMediaType(dto.pictureFileType()).language(dto.language()).bitrate(dto.bitrate())
                 .fileAddress(songFileAddress).pictureAddress(pictureFileAddress).artists(Set.of(artist)).build();
         return repository.save(song);
     }

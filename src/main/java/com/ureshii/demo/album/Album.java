@@ -24,7 +24,7 @@ public class Album extends BaseEntity {
     @Column(unique = true)
     private String pictureAddress;
     private Long likes;
-    private Long play_count;
+    private Long playCount;
     private boolean enabled;
 
     @ManyToMany(fetch = FetchType.EAGER)

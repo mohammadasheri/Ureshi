@@ -28,21 +28,27 @@ public record SongController(SongService songService, @Value("${app.baseDirector
 
     @PostMapping("/create")
     ResponseEntity<SongResponseDTO> createSong(@RequestParam @NotBlank String name, @RequestParam String language,
-                                               @RequestParam String bitrate, @RequestParam @NotNull Long artistId,
+                                               @RequestParam Long duration, @RequestParam String bitrate,
+                                               @RequestParam @NotNull Long artistId,
                                                @RequestParam MultipartFile pictureFile,
                                                @RequestParam MultipartFile songFile)
             throws IOException, NotFoundException {
         log.info("Song controller: create song");
         CreateSongDTO dto = new CreateSongDTO(name, language, bitrate, artistId,
                 FilenameUtils.getExtension(pictureFile.getOriginalFilename()),
-                FilenameUtils.getExtension(songFile.getOriginalFilename()), pictureFile.getBytes(),
+                FilenameUtils.getExtension(songFile.getOriginalFilename()), duration, pictureFile.getBytes(),
                 songFile.getBytes());
         Song song = songService.createSong(dto);
         return new ResponseEntity<>(convertSong(song), HttpStatus.CREATED);
     }
 
     @GetMapping("/list")
-    ResponseEntity<List<SongResponseDTO>> downloadSong() {
+    ResponseEntity<List<SongResponseDTO>> getAllSongs() {
+        return new ResponseEntity<>(songService.getAllSongs().stream().map(this::convertSong).toList(), HttpStatus.OK);
+    }
+
+    @GetMapping("/list/home")
+    ResponseEntity<List<SongResponseDTO>> getHomeSongs() {
         return new ResponseEntity<>(songService.getAllSongs().stream().map(this::convertSong).toList(), HttpStatus.OK);
     }
 
@@ -55,16 +61,38 @@ public record SongController(SongService songService, @Value("${app.baseDirector
         byte[] dataBytes = FileUtils.readFileToByteArray(data);
         ByteArrayResource resource = new ByteArrayResource(dataBytes);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-disposition", "attachment; filename=\"" + id + "." + song.getMediaType() + "\"");
+        headers.add("Content-disposition", "attachment; filename=\"" + id + "." + song.getSongMediaType() + "\"");
+        return ResponseEntity.ok().headers(headers).contentLength(dataBytes.length)
+                .contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
+    }
+
+    @GetMapping("/picture/download/{id}")
+    ResponseEntity<ByteArrayResource> downloadPicture(@PathVariable @NotNull Long id)
+            throws IOException, NotFoundException {
+        Song song = songService.downloadFileById(id);
+        String fileAddress = baseDirectory + song.getPictureAddress();
+        File data = ResourceUtils.getFile(fileAddress);
+        byte[] dataBytes = FileUtils.readFileToByteArray(data);
+        ByteArrayResource resource = new ByteArrayResource(dataBytes);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-disposition", "attachment; filename=\"" + id + "." + song.getPictureMediaType() + "\"");
         return ResponseEntity.ok().headers(headers).contentLength(dataBytes.length)
                 .contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
     }
 
     private SongResponseDTO convertSong(Song song) {
-        return new SongResponseDTO(song.getId(), song.getName(), song.getLanguage(), song.getBitrate(), song.getLikes(),
-                song.getPlay_count(),
-                song.getArtists().stream().map(artist -> new ArtistResponseDTO(artist.getId(), artist.getName()))
-                        .toList());
+//        return new SongResponseDTO(song.getId(), song.getName(), song.getMediaType(), song.getLanguage(),
+//                song.getBitrate(),
+//                song.getLikes(),
+//                song.getplayCount(),
+//                song.getArtists().stream().map(artist -> new ArtistResponseDTO(artist.getId(), artist.getName()))
+//                        .toList());
+        return new SongResponseDTO(song.getId(), song.getName(), song.getSongMediaType(),song.getPictureMediaType(),
+                song.getLanguage(),
+                song.getBitrate(),
+                song.getLikes(),
+                song.getPlayCount(),
+                null);
     }
 
 }
