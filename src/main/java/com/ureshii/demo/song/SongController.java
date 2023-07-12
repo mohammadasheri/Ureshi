@@ -89,7 +89,7 @@ public record SongController(SongService songService, @Value("${app.baseDirector
 //                        .toList());
         return new SongResponseDTO(song.getId(), song.getName(), song.getSongMediaType(),song.getPictureMediaType(),
                 song.getLanguage(),
-                song.getBitrate(),
+                song.getDuration(),
                 song.getLikes(),
                 song.getPlayCount(),
                 null);
