@@ -1,7 +1,7 @@
 spring:
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/hara
+    url: jdbc:postgresql://localhost:5433/postgres
     username: postgres
     password: hara1234HARA123
     hikari:
