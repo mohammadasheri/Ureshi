@@ -21,13 +21,16 @@ public class Song extends BaseEntity {
     private long id;
     @Column(nullable = false)
     private String name;
+    private String songMediaType;
+    private String pictureMediaType;
     private String language;
     private String bitrate;
+    private Long duration;
     @Column(nullable = false, unique = true)
     private String fileAddress;
     private String pictureAddress;
     private Long likes;
-    private Long play_count;
+    private Long playCount;
     private boolean enabled;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -36,5 +39,6 @@ public class Song extends BaseEntity {
             joinColumns = @JoinColumn(name = "song_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id")
     )
+
     private Set<Artist> artists = new HashSet<>();
 }
