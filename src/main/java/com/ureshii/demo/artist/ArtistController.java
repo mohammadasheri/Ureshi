@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/artist")
@@ -18,9 +19,7 @@ import java.io.IOException;
 public record ArtistController(ArtistService artistService) {
 
     @PostMapping("/create")
-    ResponseEntity<ArtistResponseDTO> createArtist(@RequestParam @NotBlank String name,
-                                        @NotBlank @RequestParam String countryOfOrigin,
-                                        @RequestParam MultipartFile pictureFile) throws IOException {
+    ResponseEntity<ArtistResponseDTO> createArtist(@RequestParam @NotBlank String name, @RequestParam String countryOfOrigin, @RequestParam MultipartFile pictureFile) throws IOException {
         log.info("Artist controller: create artist");
         CreateArtistDTO dto = new CreateArtistDTO(name, countryOfOrigin,
                 FilenameUtils.getExtension(pictureFile.getOriginalFilename()), pictureFile.getBytes());
@@ -35,7 +34,21 @@ public record ArtistController(ArtistService artistService) {
         return new ResponseEntity<>(convertArtist(artist), HttpStatus.OK);
     }
 
+    @GetMapping(path = "/list")
+    ResponseEntity<List<ArtistResponseDTO>> getAllArtists() throws NotFoundException {
+        log.info("Artist controller: create artist");
+        List<Artist> artists = artistService.getAllArtists();
+        return new ResponseEntity<>(artists.stream().map(this::convertArtist).toList(), HttpStatus.OK);
+    }
+
+//    @GetMapping(path = "/{id}")
+//    ResponseEntity<ArtistResponseDTO> getArtistByName(@PathVariable @NotNull Long id) throws NotFoundException {
+//        log.info("Artist controller: create artist");
+//        Artist artist = artistService.getArtistById(id);
+//        return new ResponseEntity<>(convertArtist(artist), HttpStatus.OK);
+//    }
+
     private ArtistResponseDTO convertArtist(Artist artist) {
-        return new ArtistResponseDTO(artist.getId(),artist.getName());
+        return new ArtistResponseDTO(artist.getId(), artist.getName());
     }
 }

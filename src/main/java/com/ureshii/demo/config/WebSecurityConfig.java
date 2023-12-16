@@ -64,14 +64,18 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/create").permitAll()
                         .requestMatchers("/user/login").permitAll()
+                        .requestMatchers("/user/update").hasAnyAuthority(RoleEnum.Admin.name())
+
                         .requestMatchers("/song/create").permitAll()
                         .requestMatchers("/song/list").permitAll()
                         .requestMatchers("/song/list/home").permitAll()
                         .requestMatchers("/song/download/{id}").permitAll()
                         .requestMatchers("/song/picture/download/{id}").permitAll()
+
                         .requestMatchers("/artist/create").permitAll()
                         .requestMatchers("/artist/{id}").permitAll()
-                        .requestMatchers("/user/update").hasAnyAuthority(RoleEnum.Admin.name())
+                        .requestMatchers("/artist/list").permitAll()
+
                         .anyRequest().authenticated()
                 );
 

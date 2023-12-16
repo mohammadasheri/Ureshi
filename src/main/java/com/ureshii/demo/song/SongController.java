@@ -1,6 +1,5 @@
 package com.ureshii.demo.song;
 
-import com.ureshii.demo.artist.ArtistResponseDTO;
 import com.ureshii.demo.exception.NotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,10 +27,10 @@ public record SongController(SongService songService, @Value("${app.baseDirector
 
     @PostMapping("/create")
     ResponseEntity<SongResponseDTO> createSong(@RequestParam @NotBlank String name, @RequestParam String language,
-                                               @RequestParam Long duration, @RequestParam String bitrate,
-                                               @RequestParam @NotNull Long artistId,
-                                               @RequestParam MultipartFile pictureFile,
-                                               @RequestParam MultipartFile songFile)
+            @RequestParam Long duration, @RequestParam String bitrate,
+            @RequestParam @NotNull Long artistId,
+            @RequestParam MultipartFile pictureFile,
+            @RequestParam MultipartFile songFile)
             throws IOException, NotFoundException {
         log.info("Song controller: create song");
         CreateSongDTO dto = new CreateSongDTO(name, language, bitrate, artistId,
@@ -87,7 +86,7 @@ public record SongController(SongService songService, @Value("${app.baseDirector
 //                song.getplayCount(),
 //                song.getArtists().stream().map(artist -> new ArtistResponseDTO(artist.getId(), artist.getName()))
 //                        .toList());
-        return new SongResponseDTO(song.getId(), song.getName(), song.getSongMediaType(),song.getPictureMediaType(),
+        return new SongResponseDTO(song.getId(), song.getName(), song.getSongMediaType(), song.getPictureMediaType(),
                 song.getLanguage(),
                 song.getDuration(),
                 song.getLikes(),

@@ -1,10 +1,13 @@
 package com.ureshii.demo.artist;
 
 import com.ureshii.demo.exception.NotFoundException;
-import com.ureshii.demo.song.CreateSongDTO;
-import com.ureshii.demo.song.Song;
+
+import java.util.List;
 
 public interface ArtistService {
     Artist createArtist(CreateArtistDTO dto);
+
     Artist getArtistById(Long id) throws NotFoundException;
+
+    List<Artist> getAllArtists() throws NotFoundException;
 }

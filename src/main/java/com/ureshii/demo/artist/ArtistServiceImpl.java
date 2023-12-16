@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,8 +21,9 @@ public record ArtistServiceImpl(ArtistRepository repository, ImageWriterGateway 
         String artistFileAddress = generateNewFileAddress(dto.pictureFileType());
         String pictureFileAddress = generateNewFileAddress(dto.pictureFileType());
         gateway.saveFile(pictureFileAddress, dto.pictureBytes());
-        Artist artist = Artist.builder().name(dto.name()).countryOfOrigin(dto.countryOfOrigin())
-                .pictureAddress(artistFileAddress).build();
+        Artist artist =
+                repository.findByName(dto.name()).orElseGet(()->Artist.builder().name(dto.name()).countryOfOrigin(dto.countryOfOrigin())
+                        .pictureAddress(artistFileAddress).build());
         return repository.save(artist);
     }
 
@@ -29,6 +31,15 @@ public record ArtistServiceImpl(ArtistRepository repository, ImageWriterGateway 
     public Artist getArtistById(Long id) throws NotFoundException {
         Optional<Artist> artistOptional = repository.findById(id);
         return artistOptional.orElseThrow(()-> new NotFoundException("Artist not found."));
+    }
+
+    public Artist getArtistByName(String name) throws NotFoundException {
+        Optional<Artist> artistOptional = repository.findByName(name);
+        return artistOptional.orElseThrow(()-> new NotFoundException("Artist not found."));
+    }
+
+    @Override public List<Artist> getAllArtists() throws NotFoundException {
+        return repository.findAll();
     }
 
     private String generateNewFileAddress(String fileType) {
