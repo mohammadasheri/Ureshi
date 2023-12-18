@@ -1,6 +1,5 @@
 package com.ureshii.demo.song;
 
-import com.ureshii.demo.artist.Artist;
 import com.ureshii.demo.artist.ArtistService;
 import com.ureshii.demo.config.file.ImageWriterGateway;
 import com.ureshii.demo.exception.NotFoundException;
@@ -39,10 +38,15 @@ public class SongServiceImpl implements SongService {
         String pictureFileAddress = generateNewFileAddress(dto.pictureFileType());
         gateway.saveFile(songFileAddress, dto.songBytes());
         gateway.saveFile(pictureFileAddress, dto.pictureBytes());
-        Artist artist = artistService.getArtistById(dto.artistId());
         Song song = Song.builder().name(dto.name()).duration(dto.duration()).songMediaType(dto.songMediaType())
-                .pictureMediaType(dto.pictureFileType()).language(dto.language()).bitrate(dto.bitrate())
-                .fileAddress(songFileAddress).pictureAddress(pictureFileAddress).artists(Set.of(artist)).build();
+                .pictureMediaType(dto.pictureFileType()).fileAddress(songFileAddress).pictureAddress(pictureFileAddress)
+                .build();
+
+        if (dto.artistId().isPresent()) {
+            song.setArtists(Set.of(artistService.getArtistById(dto.artistId().get())));
+        }
+        dto.language().ifPresent(song::setLanguage);
+        dto.bitrate().ifPresent(song::setBitrate);
         return repository.save(song);
     }
 

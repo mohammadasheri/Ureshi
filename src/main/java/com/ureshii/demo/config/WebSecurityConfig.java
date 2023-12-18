@@ -66,15 +66,19 @@ public class WebSecurityConfig {
                         .requestMatchers("/user/login").permitAll()
                         .requestMatchers("/user/update").hasAnyAuthority(RoleEnum.Admin.name())
 
-                        .requestMatchers("/song/create").permitAll()
-                        .requestMatchers("/song/list").permitAll()
-                        .requestMatchers("/song/list/home").permitAll()
-                        .requestMatchers("/song/download/{id}").permitAll()
-                        .requestMatchers("/song/picture/download/{id}").permitAll()
+                        .requestMatchers("/song/create").hasAnyAuthority(RoleEnum.Admin.name())
+                        .requestMatchers("/song/list").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
+                        .requestMatchers("/song/list/home").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
+                        .requestMatchers("/song/download/{id}")
+                        .hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
+                        .requestMatchers("/song/picture/download/{id}")
+                        .hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
 
-                        .requestMatchers("/artist/create").permitAll()
-                        .requestMatchers("/artist/{id}").permitAll()
-                        .requestMatchers("/artist/list").permitAll()
+                        .requestMatchers("/artist/create").hasAnyAuthority(RoleEnum.Admin.name())
+                        .requestMatchers("/artist/{id}").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
+                        .requestMatchers("/artist/findByName").hasAnyAuthority(RoleEnum.Admin.name(),
+                                RoleEnum.User.name())
+                        .requestMatchers("/artist/list").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
 
                         .anyRequest().authenticated()
                 );

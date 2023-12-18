@@ -21,8 +21,8 @@ public record ArtistServiceImpl(ArtistRepository repository, ImageWriterGateway 
         String artistFileAddress = generateNewFileAddress(dto.pictureFileType());
         String pictureFileAddress = generateNewFileAddress(dto.pictureFileType());
         gateway.saveFile(pictureFileAddress, dto.pictureBytes());
-        Artist artist =
-                repository.findByName(dto.name()).orElseGet(()->Artist.builder().name(dto.name()).countryOfOrigin(dto.countryOfOrigin())
+        Artist artist = repository.findByName(dto.name()).orElseGet(
+                () -> Artist.builder().name(dto.name()).countryOfOrigin(dto.countryOfOrigin())
                         .pictureAddress(artistFileAddress).build());
         return repository.save(artist);
     }
@@ -30,15 +30,16 @@ public record ArtistServiceImpl(ArtistRepository repository, ImageWriterGateway 
     @Override
     public Artist getArtistById(Long id) throws NotFoundException {
         Optional<Artist> artistOptional = repository.findById(id);
-        return artistOptional.orElseThrow(()-> new NotFoundException("Artist not found."));
+        return artistOptional.orElseThrow(() -> new NotFoundException("Artist not found."));
     }
 
-    public Artist getArtistByName(String name) throws NotFoundException {
-        Optional<Artist> artistOptional = repository.findByName(name);
-        return artistOptional.orElseThrow(()-> new NotFoundException("Artist not found."));
+    @Override
+    public Artist getArtistByName(String artistName) throws NotFoundException {
+        Optional<Artist> artistOptional = repository.findByName(artistName);
+        return artistOptional.orElseThrow(() -> new NotFoundException("Artist not found."));
     }
 
-    @Override public List<Artist> getAllArtists() throws NotFoundException {
+    @Override public List<Artist> getAllArtists() {
         return repository.findAll();
     }
 

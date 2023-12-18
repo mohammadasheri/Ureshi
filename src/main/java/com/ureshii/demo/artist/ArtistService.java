@@ -8,6 +8,7 @@ public interface ArtistService {
     Artist createArtist(CreateArtistDTO dto);
 
     Artist getArtistById(Long id) throws NotFoundException;
+    Artist getArtistByName(String name) throws NotFoundException;
 
-    List<Artist> getAllArtists() throws NotFoundException;
+    List<Artist> getAllArtists();
 }
