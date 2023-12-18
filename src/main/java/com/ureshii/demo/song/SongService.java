@@ -10,5 +10,5 @@ public interface SongService {
 
     List<Song> getAllSongs();
 
-    Song downloadFileById(Long id) throws IOException, NotFoundException;
+    Song getSongById(Long id) throws NotFoundException;
 }

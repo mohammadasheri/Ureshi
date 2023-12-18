@@ -57,7 +57,7 @@ public record SongController(SongService songService, @Value("${app.baseDirector
     @GetMapping("/download/{id}")
     ResponseEntity<ByteArrayResource> downloadSong(@PathVariable @NotNull Long id)
             throws IOException, NotFoundException {
-        Song song = songService.downloadFileById(id);
+        Song song = songService.getSongById(id);
         String fileAddress = baseDirectory + song.getFileAddress();
         File data = ResourceUtils.getFile(fileAddress);
         byte[] dataBytes = FileUtils.readFileToByteArray(data);
@@ -71,7 +71,7 @@ public record SongController(SongService songService, @Value("${app.baseDirector
     @GetMapping("/picture/download/{id}")
     ResponseEntity<ByteArrayResource> downloadPicture(@PathVariable @NotNull Long id)
             throws IOException, NotFoundException {
-        Song song = songService.downloadFileById(id);
+        Song song = songService.getSongById(id);
         String fileAddress = baseDirectory + song.getPictureAddress();
         File data = ResourceUtils.getFile(fileAddress);
         byte[] dataBytes = FileUtils.readFileToByteArray(data);

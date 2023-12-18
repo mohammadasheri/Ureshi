@@ -56,11 +56,9 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Song downloadFileById(Long id) throws IOException, NotFoundException {
-        Song song = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("There is no file available with this parameters."));
-
-        return song;
+    public Song getSongById(Long id) throws NotFoundException {
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("There is no song available with this parameters."));
     }
 
     private String generateNewFileAddress(String fileType) {
