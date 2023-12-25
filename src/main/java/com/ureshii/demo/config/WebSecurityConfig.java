@@ -69,10 +69,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/song/create").hasAnyAuthority(RoleEnum.Admin.name())
                         .requestMatchers("/song/list").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
                         .requestMatchers("/song/list/home").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
-                        .requestMatchers("/song/download/{id}")
-                        .hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
-                        .requestMatchers("/song/picture/download/{id}")
-                        .hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
+                        .requestMatchers("/song/download/{id}").permitAll()
+                        .requestMatchers("/song/picture/download/{id}").permitAll()
 
                         .requestMatchers("/artist/create").hasAnyAuthority(RoleEnum.Admin.name())
                         .requestMatchers("/artist/{id}").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())

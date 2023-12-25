@@ -11,7 +11,7 @@ spring:
 
   jpa:
     hibernate:
-#      ddl-auto: create-drop
+      #      ddl-auto: create-drop
       ddl-auto: update
 
   servlet:
@@ -25,3 +25,9 @@ app:
     jwtSecret: haraJWTSecretKey
     jwtExpirationMs: 60000000
     jwtRefreshExpirationMs: 1800000000
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
