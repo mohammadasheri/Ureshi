@@ -23,6 +23,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class WebSecurityConfig {
 
+    private static final String[] WHITE_LIST = {"swagger-ui/**",
+            "v3/api-docs/**",
+            "/ws/**",
+            "/index.html",
+            "/",
+            "/user/create",
+            "/user/login",
+            "/song/download/{id}",
+            "/song/picture/download/{id}",
+            "/playlist/picture/download/{id}"
+    };
+
     private final UserService userService;
     private final AuthEntryPointJwt unauthorizedHandler;
     private final JwtUtils jwtUtils;
@@ -62,15 +74,12 @@ public class WebSecurityConfig {
                 .exceptionHandling(exp -> exp.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(ex -> ex.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/create").permitAll()
-                        .requestMatchers("/user/login").permitAll()
                         .requestMatchers("/user/update").hasAnyAuthority(RoleEnum.Admin.name())
 
                         .requestMatchers("/song/create").hasAnyAuthority(RoleEnum.Admin.name())
                         .requestMatchers("/song/list").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
                         .requestMatchers("/song/list/home").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
-                        .requestMatchers("/song/download/{id}").permitAll()
-                        .requestMatchers("/song/picture/download/{id}").permitAll()
+
 
                         .requestMatchers("/artist/create").hasAnyAuthority(RoleEnum.Admin.name())
                         .requestMatchers("/artist/{id}").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
@@ -83,7 +92,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/playlist/findByName").hasAnyAuthority(RoleEnum.Admin.name(),
                                 RoleEnum.User.name())
                         .requestMatchers("/playlist/list").hasAnyAuthority(RoleEnum.Admin.name(), RoleEnum.User.name())
-
+                        .requestMatchers(WHITE_LIST).permitAll()
                         .anyRequest().authenticated()
                 );
 

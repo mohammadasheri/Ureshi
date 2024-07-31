@@ -21,12 +21,11 @@ public record PlaylistServiceImpl(PlaylistRepository repository, SongService son
     @Override
     public Playlist createPlaylist(CreatePlaylistDTO dto) {
         log.info("Playlist service: create Playlist");
-        String PlaylistFileAddress = generateNewFileAddress(dto.pictureFileType());
         String pictureFileAddress = generateNewFileAddress(dto.pictureFileType());
         gateway.saveFile(pictureFileAddress, dto.pictureBytes());
         Playlist playlist = repository.findByName(dto.name()).orElseGet(
                 () -> Playlist.builder().name(dto.name())
-                        .pictureAddress(PlaylistFileAddress).build());
+                        .pictureAddress(pictureFileAddress).pictureMediaType(dto.pictureFileType()).build());
         return repository.save(playlist);
     }
 

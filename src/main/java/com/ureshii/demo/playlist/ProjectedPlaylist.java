@@ -4,6 +4,4 @@ public interface ProjectedPlaylist {
     Long getId();
 
     String getName();
-
-
 }

@@ -23,6 +23,7 @@ public class Playlist extends BaseEntity {
     private String playCount;
     @Column(nullable = false, unique = true)
     private String pictureAddress;
+    private String pictureMediaType;
     private boolean enabled;
 
     @ManyToMany(fetch = FetchType.EAGER)

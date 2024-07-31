@@ -83,12 +83,6 @@ public record SongController(SongService songService, @Value("${app.baseDirector
     }
 
     private SongResponseDTO convertSong(Song song) {
-//        return new SongResponseDTO(song.getId(), song.getName(), song.getMediaType(), song.getLanguage(),
-//                song.getBitrate(),
-//                song.getLikes(),
-//                song.getplayCount(),
-//                song.getArtists().stream().map(artist -> new ArtistResponseDTO(artist.getId(), artist.getName()))
-//                        .toList());
         return new SongResponseDTO(song.getId(), song.getName(), song.getSongMediaType(), song.getPictureMediaType(),
                 song.getLanguage(),
                 song.getDuration(),
