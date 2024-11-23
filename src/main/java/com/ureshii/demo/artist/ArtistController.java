@@ -1,6 +1,7 @@
 package com.ureshii.demo.artist;
 
 import com.ureshii.demo.exception.NotFoundException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.List;
 public record ArtistController(ArtistService artistService) {
 
     @PostMapping("/create")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<ArtistResponseDTO> createArtist(@RequestParam @NotBlank String name,
             @RequestParam String countryOfOrigin, @RequestParam MultipartFile pictureFile) throws IOException {
         log.info("Artist controller: create artist");
@@ -29,6 +31,7 @@ public record ArtistController(ArtistService artistService) {
     }
 
     @GetMapping(path = "/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<ArtistResponseDTO> getArtistById(@PathVariable @NotNull Long id) throws NotFoundException {
         log.info("Artist controller: find artist by id");
         Artist artist = artistService.getArtistById(id);
@@ -36,6 +39,7 @@ public record ArtistController(ArtistService artistService) {
     }
 
     @GetMapping(path = "/list")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<List<ArtistResponseDTO>> getAllArtists() {
         log.info("Artist controller: list artist");
         List<Artist> artists = artistService.getAllArtists();
@@ -43,6 +47,7 @@ public record ArtistController(ArtistService artistService) {
     }
 
     @GetMapping(path = "/findByName")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<ArtistResponseDTO> getArtistByName(@RequestParam @NotNull String artistName)
             throws NotFoundException {
         log.info("Artist controller: find artist by name");

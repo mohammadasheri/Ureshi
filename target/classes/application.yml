@@ -11,13 +11,13 @@ spring:
 
   jpa:
     hibernate:
-      #      ddl-auto: create-drop
+#      ddl-auto: create-drop
       ddl-auto: update
 
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 12MB
+      max-file-size: 20MB
+      max-request-size: 22MB
 
 app:
   baseDirectory: /opt/ureshii
@@ -26,11 +26,11 @@ app:
     jwtExpirationMs: 60000000
     jwtRefreshExpirationMs: 1800000000
 
-logging:
-  level:
-    org:
-      springframework:
-        web: DEBUG
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        web: DEBUG
 
 server:
   servlet:

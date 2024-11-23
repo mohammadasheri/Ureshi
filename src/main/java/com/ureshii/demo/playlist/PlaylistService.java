@@ -15,4 +15,6 @@ public interface PlaylistService {
     Playlist getPlaylistByName(String name) throws NotFoundException;
 
     List<ProjectedPlaylist> getAllPlaylists();
+
+    List<ProjectedPlaylist> getPlaylistsLike(String query);
 }

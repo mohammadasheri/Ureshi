@@ -5,6 +5,7 @@ import com.ureshii.demo.artist.ArtistResponseDTO;
 import com.ureshii.demo.exception.NotFoundException;
 import com.ureshii.demo.song.Song;
 import com.ureshii.demo.song.SongResponseDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ import java.util.List;
 public record PlaylistController(PlaylistService service, @Value("${app.baseDirectory}") String baseDirectory) {
 
     @PostMapping("/create")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<PlaylistResponseDTO> createPlaylist(@RequestParam @NotBlank String name, @RequestParam MultipartFile pictureFile) throws IOException {
         log.info("Playlist controller: create playlist");
         CreatePlaylistDTO dto = new CreatePlaylistDTO(name,
@@ -39,6 +41,7 @@ public record PlaylistController(PlaylistService service, @Value("${app.baseDire
     }
 
     @PostMapping("/addSong")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<PlaylistResponseDTO> createPlaylist(@RequestBody PlaylistAddSongDTO dto)
             throws IOException, NotFoundException {
         log.info("Playlist controller: create playlist");
@@ -47,6 +50,7 @@ public record PlaylistController(PlaylistService service, @Value("${app.baseDire
     }
 
     @GetMapping(path = "/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<PlaylistResponseDTO> getPlaylistById(@PathVariable @NotNull Long id) throws NotFoundException {
         log.info("Playlist controller: find playlist by id");
         Playlist playlist = service.getPlaylistById(id);
@@ -54,6 +58,7 @@ public record PlaylistController(PlaylistService service, @Value("${app.baseDire
     }
 
     @GetMapping(path = "/list")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<List<ProjectedPlaylist>> getAllPlaylists() {
         log.info("Playlist controller: list playlist");
         List<ProjectedPlaylist> playlists = service.getAllPlaylists();
@@ -61,6 +66,7 @@ public record PlaylistController(PlaylistService service, @Value("${app.baseDire
     }
 
     @GetMapping(path = "/listSongs/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<List<SongResponseDTO>> getPlaylistSongs(@PathVariable @NotNull Long id) throws NotFoundException {
         log.info("Playlist controller: list playlist songs");
         Playlist playlist = service.getPlaylistById(id);
@@ -68,6 +74,7 @@ public record PlaylistController(PlaylistService service, @Value("${app.baseDire
     }
 
     @GetMapping(path = "/findByName")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<PlaylistResponseDTO> getPlaylistByName(@RequestParam @NotNull String artistName)
             throws NotFoundException {
         log.info("Playlist controller: find playlist by name");
@@ -77,6 +84,7 @@ public record PlaylistController(PlaylistService service, @Value("${app.baseDire
 
 
     @GetMapping("/picture/download/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<ByteArrayResource> downloadPicture(@PathVariable @NotNull Long id)
             throws IOException, NotFoundException {
         Playlist playlist = service.getPlaylistById(id);

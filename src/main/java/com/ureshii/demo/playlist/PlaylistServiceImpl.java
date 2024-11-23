@@ -53,6 +53,10 @@ public record PlaylistServiceImpl(PlaylistRepository repository, SongService son
         return repository.findAllByOrderByCreatedDesc();
     }
 
+    @Override public List<ProjectedPlaylist> getPlaylistsLike(String query) {
+        return repository.findAllByNameIgnoreCaseContainingOrderByCreatedDesc(query);
+    }
+
     private String generateNewFileAddress(String fileType) {
         log.debug("generate new file address");
         SimpleDateFormat formatter = new SimpleDateFormat("/yyyy/MM/dd/HH/mm/");

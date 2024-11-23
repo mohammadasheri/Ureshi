@@ -1,18 +1,17 @@
 package com.ureshii.demo.song;
 
+import com.ureshii.demo.artist.Artist;
 import com.ureshii.demo.artist.ArtistService;
 import com.ureshii.demo.config.file.ImageWriterGateway;
 import com.ureshii.demo.exception.NotFoundException;
+import com.ureshii.demo.playlist.ProjectedPlaylist;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -42,9 +41,11 @@ public class SongServiceImpl implements SongService {
                 .pictureMediaType(dto.pictureFileType()).fileAddress(songFileAddress).pictureAddress(pictureFileAddress)
                 .build();
 
+        Set<Artist> artists = new HashSet<>(Collections.emptySet());
         if (dto.artistId().isPresent()) {
-            song.setArtists(Set.of(artistService.getArtistById(dto.artistId().get())));
+            artists.add(artistService.getArtistById(dto.artistId().get()));
         }
+        song.setArtists(artists);
         dto.language().ifPresent(song::setLanguage);
         dto.bitrate().ifPresent(song::setBitrate);
         return repository.save(song);
@@ -59,6 +60,10 @@ public class SongServiceImpl implements SongService {
     public Song getSongById(Long id) throws NotFoundException {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("There is no song available with this parameters."));
+    }
+
+    @Override public List<ProjectedSong> getSongsLike(String query) {
+        return repository.findAllByNameIgnoreCaseContainingOrderByCreatedDesc(query);
     }
 
     private String generateNewFileAddress(String fileType) {

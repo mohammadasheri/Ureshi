@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -21,25 +22,51 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 class ContentExceptionHandler extends ResponseEntityExceptionHandler {
-
     @ExceptionHandler(ServiceException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<ErrorDTO> handleServiceException(ServiceException ex) {
         return new ResponseEntity<>(
-                new ErrorDTO(HttpStatus.BAD_REQUEST, Objects.requireNonNull(ex.getMessage()).toUpperCase(), ""),
+                new ErrorDTO(HttpStatus.BAD_REQUEST.value(), Objects.requireNonNull(ex.getMessage()).toUpperCase(),
+                        ex.toString()),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public ResponseEntity<ErrorDTO> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex) {
+        return new ResponseEntity<>(
+                new ErrorDTO(HttpStatus.BAD_REQUEST.value(), Objects.requireNonNull(ex.getMessage()).toUpperCase(),
+                        ex.toString()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorDTO> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(
+                new ErrorDTO(HttpStatus.BAD_REQUEST.value(), Objects.requireNonNull(ex.getMessage()).toUpperCase(),
+                        ex.toString()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ContentLargeException.class)
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    ResponseEntity<ErrorDTO> handlePayloadTooLargeException(ContentLargeException ex) {
+        return new ResponseEntity<>(
+                new ErrorDTO(HttpStatus.PAYLOAD_TOO_LARGE.value(), Objects.requireNonNull(ex.getMessage()).toUpperCase(),
+                        ex.toString()),
+                HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ResponseEntity<ErrorDTO> handleNotFoundException(NotFoundException ex) {
         return new ResponseEntity<>(
-                new ErrorDTO(HttpStatus.NOT_FOUND, Objects.requireNonNull(ex.getMessage()).toUpperCase(), ""),
+                new ErrorDTO(HttpStatus.NOT_FOUND.value(), Objects.requireNonNull(ex.getMessage()).toUpperCase(),
+                        ex.toString()),
                 HttpStatus.NOT_FOUND);
     }
 
@@ -47,15 +74,17 @@ class ContentExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     ResponseEntity<ErrorDTO> handleConflictException(ConflictException ex) {
         return new ResponseEntity<>(
-                new ErrorDTO(HttpStatus.CONFLICT, Objects.requireNonNull(ex.getMessage()).toUpperCase(), ""),
+                new ErrorDTO(HttpStatus.CONFLICT.value(), Objects.requireNonNull(ex.getMessage()).toUpperCase(),
+                        ex.toString()),
                 HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(UserBlockedException.class)
+    @ExceptionHandler(ForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    ResponseEntity<ErrorDTO> handleForbiddenException(UserBlockedException ex) {
+    ResponseEntity<ErrorDTO> handleForbiddenException(ForbiddenException ex) {
         return new ResponseEntity<>(
-                new ErrorDTO(HttpStatus.FORBIDDEN, Objects.requireNonNull(ex.getMessage()).toUpperCase(), ""),
+                new ErrorDTO(HttpStatus.FORBIDDEN.value(), Objects.requireNonNull(ex.getMessage()).toUpperCase(),
+                        ex.toString()),
                 HttpStatus.FORBIDDEN);
     }
 
@@ -63,44 +92,43 @@ class ContentExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<ErrorDTO> handleForbiddenException(NoChangeException ex) {
         return new ResponseEntity<>(
-                new ErrorDTO(HttpStatus.BAD_REQUEST, Objects.requireNonNull(ex.getMessage()).toUpperCase(), ""),
+                new ErrorDTO(HttpStatus.BAD_REQUEST.value(), Objects.requireNonNull(ex.getMessage()).toUpperCase(), ex.toString()),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(BAD_REQUEST)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<ErrorDTO> handleConstraintViolationException(ConstraintViolationException ex) {
-        return new ResponseEntity<>(new ErrorDTO(BAD_REQUEST, ex.getMessage().toUpperCase(), ""),
-                BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorDTO(HttpStatus.BAD_REQUEST.value(), ex.getMessage().toUpperCase(), ex.toString()),
+                HttpStatus.BAD_REQUEST);
     }
 
-    @ResponseStatus(BAD_REQUEST)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidParameterException.class)
     public ResponseEntity<ErrorDTO> handleInvalidParameterException(InvalidParameterException ex) {
-
-        return new ResponseEntity<>(new ErrorDTO(BAD_REQUEST, ex.getMessage().toUpperCase(), ""),
-                BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorDTO(HttpStatus.BAD_REQUEST.value(), ex.getMessage().toUpperCase(), ex.toString()),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MultipartException.class)
-    @ResponseStatus(BAD_REQUEST)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<ErrorDTO> handleMultipartException(MultipartException ex) {
         return new ResponseEntity<>(
-                new ErrorDTO(BAD_REQUEST, Objects.requireNonNull(ex.getMessage()).toUpperCase(), ""),
-                BAD_REQUEST);
+                new ErrorDTO(HttpStatus.BAD_REQUEST.value(), Objects.requireNonNull(ex.getMessage()).toUpperCase(), ex.toString()),
+                HttpStatus.BAD_REQUEST);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatusCode status,
                                                                   WebRequest request) {
-        ErrorDTO dto = new ErrorDTO(BAD_REQUEST, ex.getBody().getDetail(), getErrorDescription(ex));
-        return new ResponseEntity<>(dto, BAD_REQUEST);
+        ErrorDTO dto = new ErrorDTO(HttpStatus.BAD_REQUEST.value(), ex.getBody().getDetail(), getErrorDescription(ex));
+        return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
 
     private String getErrorDescription(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);

@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
     Optional<Playlist> findByName(String name);
     List<ProjectedPlaylist> findAllByOrderByCreatedDesc();
+    List<ProjectedPlaylist> findAllByNameIgnoreCaseContainingOrderByCreatedDesc(String queryString);
 }

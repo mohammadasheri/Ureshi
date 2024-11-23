@@ -3,6 +3,7 @@ package com.ureshii.demo.song;
 import com.ureshii.demo.artist.Artist;
 import com.ureshii.demo.artist.ArtistResponseDTO;
 import com.ureshii.demo.exception.NotFoundException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import java.util.Optional;
 public record SongController(SongService songService, @Value("${app.baseDirectory}") String baseDirectory) {
 
     @PostMapping("/create")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<SongResponseDTO> createSong(@RequestParam @NotBlank String name,
             @RequestParam Optional<String> language,
             @RequestParam Long duration, @RequestParam Optional<String> bitrate,
@@ -45,16 +47,19 @@ public record SongController(SongService songService, @Value("${app.baseDirector
     }
 
     @GetMapping("/list")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<List<SongResponseDTO>> getAllSongs() {
         return new ResponseEntity<>(songService.getAllSongs().stream().map(this::convertSong).toList(), HttpStatus.OK);
     }
 
     @GetMapping("/list/home")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<List<SongResponseDTO>> getHomeSongs() {
         return new ResponseEntity<>(songService.getAllSongs().stream().map(this::convertSong).toList(), HttpStatus.OK);
     }
 
     @GetMapping("/download/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<ByteArrayResource> downloadSong(@PathVariable @NotNull Long id)
             throws IOException, NotFoundException {
         Song song = songService.getSongById(id);
@@ -69,6 +74,7 @@ public record SongController(SongService songService, @Value("${app.baseDirector
     }
 
     @GetMapping("/picture/download/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<ByteArrayResource> downloadPicture(@PathVariable @NotNull Long id)
             throws IOException, NotFoundException {
         Song song = songService.getSongById(id);

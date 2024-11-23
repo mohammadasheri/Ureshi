@@ -5,6 +5,7 @@ import com.ureshii.demo.user.dto.CreateUserRequestDTO;
 import com.ureshii.demo.user.dto.LoginRequestDTO;
 import com.ureshii.demo.user.dto.LoginResponseDTO;
 import com.ureshii.demo.user.dto.UserResponseDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public record UserController(UserService userService, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
 
     @PostMapping("/create")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<UserResponseDTO> createUser(@RequestBody @NotNull CreateUserRequestDTO dto) {
         log.info("UserController-> create user");
         UreshiiUser user = userService.createUserWithRole(dto);
@@ -32,6 +34,7 @@ public record UserController(UserService userService, AuthenticationManager auth
     }
 
     @PostMapping("/login")
+    @SecurityRequirement(name = "bearerAuth")
     ResponseEntity<LoginResponseDTO> login(@RequestBody @NotNull LoginRequestDTO dto) {
         log.info("UserController-> login user");
         Authentication authentication =
@@ -42,11 +45,13 @@ public record UserController(UserService userService, AuthenticationManager auth
     }
 
     @PostMapping("/disable")
+    @SecurityRequirement(name = "bearerAuth")
     void disableUser(@RequestBody @NotNull CreateUserRequestDTO dto) {
         userService.disableEnableUser(dto, false);
     }
 
     @PostMapping("/enable")
+    @SecurityRequirement(name = "bearerAuth")
     void enableUser(@RequestBody @NotNull CreateUserRequestDTO dto) {
         userService.disableEnableUser(dto, true);
     }
